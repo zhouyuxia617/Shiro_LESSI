@@ -35,7 +35,7 @@ public class ShiroHello {
 		//判断是否登录过,默认是false
 		if(! currentUser.isAuthenticated()) {
 			//输入令牌，用户名和密码
-			UsernamePasswordToken upt = new UsernamePasswordToken("zyx","123456");
+			UsernamePasswordToken upt = new UsernamePasswordToken("znl","666666");
 			
 			try {
 				//用当前用户和输入的令牌做比较
