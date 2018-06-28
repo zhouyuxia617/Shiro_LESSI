@@ -9,6 +9,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
@@ -24,8 +25,54 @@ public class MyRealm extends AuthorizingRealm{
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		//获取用户名
+		String userName = principals.getPrimaryPrincipal().toString();
+		
+		//返回当前用户所有的角色和权限
+		SimpleAuthorizationInfo sai = new SimpleAuthorizationInfo();
+	 /**sai.addRole("student"); //学生
+		sai.addRole("teacher"); //老师
+	 */	
+		//	sai.addStringPermission("*"); //任何
+		
+		//数据库中查询所有用户角色
+		String sql = "SELECT r.rolename FROM t_userinfo u INNER JOIN t_user_role ur ON u.userid=ur.userid INNER JOIN t_role r ON ur.roleid=r.roleid WHERE u.username=?";
+		
+		JdbcUtils ju = new JdbcUtils();
+		ResultSet query = ju.Query(sql,userName);
+		
+		try {
+			while (query.next()) {
+				sai.addRole(query.getString("rolename"));
+			} 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			query.close();
+		}catch(SQLException el) {
+			el.printStackTrace();
+		}
+		
+		//添加权限到ream中
+		sql = "SELECT pm.permstr FROM t_userinfo u INNER JOIN t_user_role ur ON u_userid=ur.userid\r\n"
+				+"INNER JOIN t_role r ON ur.roleid=r.roleid \r\n"
+				+"INNER JOIN t_role_perm p ON r.roleid=p.roleid \r\n"
+				+"INNER JOIN t_perm ON p.permid=pm.permid \r\n"
+				+"WHERE u.username=?";
+		
+		query = ju.Query(sql, userName);
+		try {
+			while(query.next()) {
+				sai.addStringPermission(query.getString("permstr"));
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	
+		return sai;
 	}
 
 	
@@ -64,7 +111,8 @@ public class MyRealm extends AuthorizingRealm{
 		*/
 		
 		// ----3
-		String sql = "SELECT * FROM t_user WHERE n_name=? AND password=? ";
+	//	String sql = "SELECT * FROM t_user WHERE n_name=? AND password=? ";
+		String sql = "SELECT * FROM t_user WHERE username=? AND password=? ";
 		
 		JdbcUtils ju = new JdbcUtils();
 		

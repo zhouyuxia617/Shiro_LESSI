@@ -59,7 +59,7 @@ public class ShiroHello {
 	}
 	
 	/**
-	 * 测试用户是否拥有某个权限
+	 * 测试用户是否拥有某个权限角色
 	 */
 	public static void testRole() {
 		//获取当前用户,当前用户是一个内存中分配的虚拟用户
