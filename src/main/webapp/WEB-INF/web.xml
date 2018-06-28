@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <display-name>SHIRO_LESSI</display-name>
+ 
+  <filter>
+  	<filter-name>ShiroFilter</filter-name>
+  	<filter-class>org.apache.shiro.web.servlet.IniShiroFilter</filter-class>
+  	<init-param>
+  		<param-name>configPath</param-name>
+  		<param-value>classpath:m.ini</param-value>
+  	</init-param>
+  </filter>
+
+  <filter-mapping>
+  	<filter-name>ShiroFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  	<dispatcher>REQUEST</dispatcher>
+  	<dispatcher>FORWARD</dispatcher>
+  	<dispatcher>INCLUDE</dispatcher>
+  	<dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+    
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
@@ -9,4 +28,17 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  
+  <servlet>
+  	<description></description>
+  	<display-name>LoginServlet</display-name>
+  	<servlet-name>LoginServlet</servlet-name>
+  	<servlet-class>cn.et.shiro.first.LoginServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>LoginServlet</servlet-name>
+  	<url-pattern>/ls</url-pattern>
+  </servlet-mapping>
+
 </web-app>
